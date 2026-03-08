@@ -18,7 +18,7 @@ export default function LearningPaths() {
 
       {!selectedTrack ? (
         <div className="grid sm:grid-cols-2 gap-6">
-          {mockTracks.map(track => (
+          {tracks.map(track => (
             <CourseCard key={track.id} track={track} onClick={() => setSelectedTrack(track.id)} />
           ))}
         </div>

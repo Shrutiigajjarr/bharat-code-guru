@@ -32,7 +32,7 @@ export default function Login() {
       <div className="glass-panel-elevated p-8 md:p-12 w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
           <span className="text-5xl block mb-3">🇮🇳</span>
-          <h1 className="text-2xl font-bold gradient-text">Bharat Code Guru</h1>
+          <h1 className="text-2xl font-bold text-foreground">Bharat Code Guru</h1>
           <p className="text-muted-foreground mt-2 text-sm">{t("India's Premier Coding Platform", 'भारत का प्रमुख कोडिंग प्लेटफ़ॉर्म')}</p>
         </div>
 

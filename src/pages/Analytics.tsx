@@ -4,10 +4,8 @@ import { ProgressBar } from '@/components/ProgressBar';
 import { weeklyActivityData, topicMasteryData, monthlyProgressData } from '@/data/mockData';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell
+  LineChart, Line
 } from 'recharts';
-
-const COLORS = ['hsl(265,90%,76%)', 'hsl(174,97%,43%)', 'hsl(33,100%,65%)', 'hsl(280,80%,65%)', 'hsl(0,72%,55%)', 'hsl(200,80%,60%)'];
 
 export default function Analytics() {
   const { t } = useApp();
@@ -40,28 +38,13 @@ export default function Analytics() {
         </ChartPanel>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        <ChartPanel title={t('Topic Mastery', 'विषय महारत')}>
-          <div className="space-y-4">
-            {topicMasteryData.map(item => (
-              <ProgressBar key={item.topic} value={item.mastery} label={item.topic} size="md" />
-            ))}
-          </div>
-        </ChartPanel>
-
-        <ChartPanel title={t('Problem Distribution', 'समस्या वितरण')}>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={topicMasteryData} dataKey="mastery" nameKey="topic" cx="50%" cy="50%" outerRadius={90} label={({ topic }) => topic}>
-                {topicMasteryData.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none' }} />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartPanel>
-      </div>
+      <ChartPanel title={t('Topic Mastery', 'विषय महारत')}>
+        <div className="space-y-4">
+          {topicMasteryData.map(item => (
+            <ProgressBar key={item.topic} value={item.mastery} label={item.topic} size="md" />
+          ))}
+        </div>
+      </ChartPanel>
     </div>
   );
 }

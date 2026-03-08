@@ -6,7 +6,7 @@ let mermaidInitialized = false;
 function initMermaid(isDark: boolean) {
   mermaid.initialize({
     startOnLoad: false,
-    theme: isDark ? 'dark' : 'default',
+    theme: 'default',
     securityLevel: 'loose',
     fontFamily: 'inherit',
   });

@@ -14,6 +14,21 @@ export default function CodePlayground() {
   const [output, setOutput] = useState('');
   const [running, setRunning] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const defaultCode = `function solution(input) {\n  // Write your code here\n  \n  return result;\n}`;
+
+  const handleSubmit = () => {
+    const trimmed = code.trim();
+    if (!trimmed || trimmed === defaultCode.trim()) {
+      setSubmitError(t('Please write your solution before submitting.', 'कृपया सबमिट करने से पहले अपना समाधान लिखें।'));
+      return;
+    }
+    setSubmitError('');
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 2000);
+  };
 
   const handleRun = () => {
     setRunning(true);

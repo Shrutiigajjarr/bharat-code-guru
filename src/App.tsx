@@ -16,6 +16,7 @@ import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
 import ModuleViewer from "./pages/ModuleViewer";
+import ModuleQuiz from "./pages/ModuleQuiz";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

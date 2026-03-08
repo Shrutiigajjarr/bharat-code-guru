@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
-import { mockTracks } from '@/data/mockData';
 import { CourseCard } from '@/components/CourseCard';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Button } from '@/components/ui/button';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 
 export default function LearningPaths() {
-  const { t } = useApp();
+  const { t, tracks } = useApp();
   const navigate = useNavigate();
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
-  const track = mockTracks.find(tr => tr.id === selectedTrack);
+  const track = tracks.find(tr => tr.id === selectedTrack);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -19,7 +18,7 @@ export default function LearningPaths() {
 
       {!selectedTrack ? (
         <div className="grid sm:grid-cols-2 gap-6">
-          {mockTracks.map(track => (
+          {tracks.map(track => (
             <CourseCard key={track.id} track={track} onClick={() => setSelectedTrack(track.id)} />
           ))}
         </div>

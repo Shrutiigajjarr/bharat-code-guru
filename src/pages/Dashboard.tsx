@@ -2,6 +2,7 @@ import { useApp } from '@/context/AppContext';
 import { StatCard } from '@/components/StatCard';
 import { CourseCard } from '@/components/CourseCard';
 import { ChartPanel } from '@/components/ChartPanel';
+import { CodeExplainer } from '@/components/CodeExplainer';
 import { mockTracks, weeklyActivityData, mockProblems } from '@/data/mockData';
 import { FiTarget, FiZap, FiTrendingUp, FiAward, FiUsers } from 'react-icons/fi';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';

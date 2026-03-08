@@ -25,7 +25,7 @@ export default function AdminPanel() {
             <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
             <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
             <Tooltip contentStyle={{ borderRadius: '12px', border: 'none' }} />
-            <Line type="monotone" dataKey="solved" stroke="hsl(25,100%,55%)" strokeWidth={3} />
+            <Line type="monotone" dataKey="solved" stroke="hsl(265,90%,76%)" strokeWidth={3} />
           </LineChart>
         </ResponsiveContainer>
       </ChartPanel>

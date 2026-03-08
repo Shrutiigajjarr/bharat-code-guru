@@ -34,7 +34,7 @@ export default function Analytics() {
               <XAxis dataKey="day" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
               <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
               <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-              <Bar dataKey="hours" fill="hsl(214,80%,56%)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="hours" fill="hsl(174,97%,43%)" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartPanel>

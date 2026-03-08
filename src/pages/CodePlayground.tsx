@@ -74,19 +74,37 @@ export default function CodePlayground() {
           <div className="glass-panel-elevated flex-1 flex flex-col">
             <div className="flex items-center justify-between p-3 border-b border-border">
               <span className="text-sm font-medium text-muted-foreground">JavaScript</span>
-              <button
-                onClick={handleRun}
-                disabled={running}
-                className="flex items-center gap-2 px-4 py-1.5 rounded-lg font-medium text-sm text-primary-foreground gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
-              >
-                {running ? (
-                  <span className="animate-spin">⏳</span>
-                ) : (
-                  <FiPlay className="w-4 h-4" />
-                )}
-                {running ? t('Running...', 'चल रहा है...') : t('Run Code', 'कोड चलाएं')}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleRun}
+                  disabled={running}
+                  className="flex items-center gap-2 px-4 py-1.5 rounded-lg font-medium text-sm text-primary-foreground gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {running ? (
+                    <span className="animate-spin">⏳</span>
+                  ) : (
+                    <FiPlay className="w-4 h-4" />
+                  )}
+                  {running ? t('Running...', 'चल रहा है...') : t('Run Code', 'कोड चलाएं')}
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-lg font-medium text-sm transition-opacity ${
+                    submitted
+                      ? 'bg-success text-success-foreground'
+                      : 'bg-accent text-accent-foreground hover:opacity-90'
+                  }`}
+                >
+                  <FiCheckCircle className="w-4 h-4" />
+                  {submitted ? t('Submitted!', 'सबमिट हो गया!') : t('Submit', 'सबमिट करें')}
+                </button>
+              </div>
             </div>
+            {submitError && (
+              <div className="px-4 py-2 text-sm text-destructive bg-destructive/10 border-b border-border">
+                {submitError}
+              </div>
+            )}
             <textarea
               value={code}
               onChange={e => setCode(e.target.value)}

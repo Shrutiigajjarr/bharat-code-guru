@@ -3,6 +3,7 @@ import { useApp } from '@/context/AppContext';
 import { mockTracks } from '@/data/mockData';
 import { CourseCard } from '@/components/CourseCard';
 import { ProgressBar } from '@/components/ProgressBar';
+import { Button } from '@/components/ui/button';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 
 export default function LearningPaths() {

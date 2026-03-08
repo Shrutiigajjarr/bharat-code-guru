@@ -1,7 +1,6 @@
 import { useApp } from '@/context/AppContext';
 import { ChartPanel } from '@/components/ChartPanel';
-import { ProgressBar } from '@/components/ProgressBar';
-import { weeklyActivityData, topicMasteryData, monthlyProgressData } from '@/data/mockData';
+import { weeklyActivityData, monthlyProgressData } from '@/data/mockData';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   LineChart, Line
@@ -37,14 +36,6 @@ export default function Analytics() {
           </ResponsiveContainer>
         </ChartPanel>
       </div>
-
-      <ChartPanel title={t('Topic Mastery', 'विषय महारत')}>
-        <div className="space-y-4">
-          {topicMasteryData.map(item => (
-            <ProgressBar key={item.topic} value={item.mastery} label={item.topic} size="md" />
-          ))}
-        </div>
-      </ChartPanel>
     </div>
   );
 }

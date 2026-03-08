@@ -1,5 +1,6 @@
 import { useApp } from '@/context/AppContext';
 import { LearningTrack } from '@/data/mockData';
+import { Button } from '@/components/ui/button';
 
 interface CourseCardProps {
   track: LearningTrack;

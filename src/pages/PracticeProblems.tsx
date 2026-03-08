@@ -1,177 +1,293 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useApp } from '@/context/AppContext';
-import { mockProblems, Problem } from '@/data/mockData';
-import { ProblemCard } from '@/components/ProblemCard';
-import { FiSearch, FiPlay, FiCheckCircle, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { practiceTopics, PracticeTopic, PracticeQuestion } from '@/data/practiceTopics';
+import { FiClock, FiDownload, FiArrowLeft, FiCheckCircle, FiXCircle, FiPlay } from 'react-icons/fi';
+
+type ExamState = 'topics' | 'exam' | 'result';
 
 export default function PracticeProblems() {
   const { t } = useApp();
-  const [search, setSearch] = useState('');
-  const [diffFilter, setDiffFilter] = useState<string>('All');
-  const [statusFilter, setStatusFilter] = useState<string>('All');
-  const [selectedProblem, setSelectedProblem] = useState<Problem>(mockProblems[0]);
-  const [code, setCode] = useState(`function solution(input) {\n  // Write your code here\n  \n  return result;\n}`);
-  const [output, setOutput] = useState('');
-  const [running, setRunning] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [examState, setExamState] = useState<ExamState>('topics');
+  const [selectedTopic, setSelectedTopic] = useState<PracticeTopic | null>(null);
+  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const filtered = useMemo(() => {
-    return mockProblems.filter(p => {
-      const matchSearch = p.title.toLowerCase().includes(search.toLowerCase()) || p.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase()));
-      const matchDiff = diffFilter === 'All' || p.difficulty === diffFilter;
-      const matchStatus = statusFilter === 'All' || p.status === statusFilter;
-      return matchSearch && matchDiff && matchStatus;
+  const startExam = (topic: PracticeTopic) => {
+    setSelectedTopic(topic);
+    setAnswers({});
+    setSubmitted(false);
+    setTimeLeft(topic.duration * 60);
+    setExamState('exam');
+  };
+
+  useEffect(() => {
+    if (examState === 'exam' && timeLeft > 0 && !submitted) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current!);
+            setSubmitted(true);
+            setExamState('result');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    }
+  }, [examState, submitted]);
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const handleAnswer = (qId: string, optIndex: number) => {
+    if (submitted) return;
+    setAnswers(prev => ({ ...prev, [qId]: optIndex }));
+  };
+
+  const handleSubmit = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setSubmitted(true);
+    setExamState('result');
+  };
+
+  const getScore = () => {
+    if (!selectedTopic) return { correct: 0, total: 0, percent: 0 };
+    let correct = 0;
+    selectedTopic.questions.forEach(q => {
+      if (answers[q.id] === q.correctIndex) correct++;
     });
-  }, [search, diffFilter, statusFilter]);
-
-  const handleSelectProblem = (problem: Problem) => {
-    setSelectedProblem(problem);
-    setCode(`function solution(input) {\n  // Write your code here\n  \n  return result;\n}`);
-    setOutput('');
-    setSuccess(false);
+    return { correct, total: selectedTopic.questions.length, percent: Math.round((correct / selectedTopic.questions.length) * 100) };
   };
 
-  const handleRun = () => {
-    setRunning(true);
-    setOutput('');
-    setSuccess(false);
-    setTimeout(() => {
-      setRunning(false);
-      const isSuccess = Math.random() > 0.3;
-      setSuccess(isSuccess);
-      setOutput(isSuccess
-        ? `✅ All test cases passed!\n\nInput: ${selectedProblem.sampleInput}\nExpected: ${selectedProblem.sampleOutput}\nYour Output: ${selectedProblem.sampleOutput}\n\nRuntime: 4ms | Memory: 42.1 MB`
-        : `❌ Wrong Answer\n\nInput: ${selectedProblem.sampleInput}\nExpected: ${selectedProblem.sampleOutput}\nYour Output: undefined\n\nHint: Check your return statement.`
-      );
-    }, 1500);
-  };
+  const downloadQuestionPaper = useCallback((topic: PracticeTopic) => {
+    let text = `========================================\n`;
+    text += `  ${topic.title} - Question Paper\n`;
+    text += `  Duration: ${topic.duration} minutes (1.5 hours)\n`;
+    text += `  Total Questions: ${topic.totalQuestions}\n`;
+    text += `========================================\n\n`;
 
-  return (
-    <div className="flex h-[calc(100vh-120px)] gap-0 animate-fade-in overflow-hidden rounded-xl border border-border">
-      {/* Problem List Sidebar */}
-      <div className={`bg-card border-r border-border flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-0 overflow-hidden' : 'w-80 min-w-[280px]'}`}>
-        <div className="p-3 border-b border-border space-y-2">
-          <h2 className="text-sm font-bold text-foreground">{t('Problems', 'समस्याएं')}</h2>
-          <div className="relative">
-            <FiSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground w-3.5 h-3.5" />
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t('Search...', 'खोजें...')}
-              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/30 text-xs"
-            />
-          </div>
-          <div className="flex gap-1.5">
-            <select value={diffFilter} onChange={e => setDiffFilter(e.target.value)} className="flex-1 px-2 py-1 rounded-lg bg-background border border-border text-foreground text-xs">
-              <option value="All">{t('All', 'सभी')}</option>
-              <option value="Easy">{t('Easy', 'आसान')}</option>
-              <option value="Medium">{t('Medium', 'मध्यम')}</option>
-              <option value="Hard">{t('Hard', 'कठिन')}</option>
-            </select>
-            <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="flex-1 px-2 py-1 rounded-lg bg-background border border-border text-foreground text-xs">
-              <option value="All">{t('All', 'सभी')}</option>
-              <option value="solved">{t('Solved', 'हल')}</option>
-              <option value="attempted">{t('Attempted', 'प्रयास')}</option>
-              <option value="unsolved">{t('Unsolved', 'अनसुलझा')}</option>
-            </select>
-          </div>
+    topic.questions.forEach((q, i) => {
+      text += `Q${i + 1}. ${q.question}\n`;
+      q.options.forEach((opt, j) => {
+        text += `   ${String.fromCharCode(65 + j)}) ${opt}\n`;
+      });
+      text += `\n`;
+    });
+
+    text += `========================================\n`;
+    text += `  Answer Key\n`;
+    text += `========================================\n\n`;
+    topic.questions.forEach((q, i) => {
+      text += `Q${i + 1}: ${String.fromCharCode(65 + q.correctIndex)}) ${q.options[q.correctIndex]}\n`;
+    });
+
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${topic.title.replace(/\s+/g, '_')}_Question_Paper.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
+  // Topic Selection View
+  if (examState === 'topics') {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">{t('Practice Exams', 'अभ्यास परीक्षा')}</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            {t('Select a topic to start a timed 1.5-hour exam. Download question papers for offline practice.', 'समयबद्ध 1.5 घंटे की परीक्षा शुरू करने के लिए विषय चुनें। ऑफ़लाइन अभ्यास के लिए प्रश्न पत्र डाउनलोड करें।')}
+          </p>
         </div>
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          {filtered.map(p => (
-            <div
-              key={p.id}
-              onClick={() => handleSelectProblem(p)}
-              className={`p-2.5 rounded-lg cursor-pointer transition-all text-xs ${
-                selectedProblem.id === p.id
-                  ? 'bg-primary/10 border border-primary/30'
-                  : 'hover:bg-muted/50 border border-transparent'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
-                  p.status === 'solved' ? 'bg-success' : p.status === 'attempted' ? 'bg-warning' : 'bg-muted-foreground/30'
-                }`} />
-                <span className="font-medium text-foreground truncate flex-1">{t(p.title, p.titleHi)}</span>
-                <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
-                  p.difficulty === 'Easy' ? 'bg-success/10 text-success'
-                  : p.difficulty === 'Medium' ? 'bg-warning/10 text-warning'
-                  : 'bg-destructive/10 text-destructive'
-                }`}>{p.difficulty}</span>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {practiceTopics.map(topic => (
+            <div key={topic.id} className="group glass-panel-elevated p-5 rounded-xl hover-lift transition-all">
+              <div className="flex items-start justify-between mb-3">
+                <span className="text-3xl">{topic.icon}</span>
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                  {topic.totalQuestions} {t('Questions', 'प्रश्न')}
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-foreground mb-1">{t(topic.title, topic.titleHi)}</h3>
+              <div className="flex items-center gap-1.5 text-muted-foreground text-xs mb-4">
+                <FiClock className="w-3.5 h-3.5" />
+                <span>{topic.duration} {t('minutes', 'मिनट')} (1.5 {t('hours', 'घंटे')})</span>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => startExam(topic)}
+                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg font-medium text-xs text-primary-foreground gradient-primary hover:opacity-90 transition-opacity"
+                >
+                  <FiPlay className="w-3.5 h-3.5" />
+                  {t('Start Exam', 'परीक्षा शुरू')}
+                </button>
+                <button
+                  onClick={() => downloadQuestionPaper(topic)}
+                  className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg font-medium text-xs border border-border text-foreground hover:bg-muted transition-colors"
+                >
+                  <FiDownload className="w-3.5 h-3.5" />
+                  {t('Download', 'डाउनलोड')}
+                </button>
               </div>
             </div>
           ))}
-          {filtered.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground text-xs">{t('No problems found', 'कोई समस्या नहीं मिली')}</div>
-          )}
         </div>
       </div>
+    );
+  }
 
-      {/* Toggle Sidebar Button */}
-      <button
-        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-        className="self-center -ml-px z-10 bg-card border border-border rounded-r-md px-0.5 py-3 hover:bg-muted transition-colors"
-      >
-        {sidebarCollapsed ? <FiChevronRight className="w-3.5 h-3.5 text-muted-foreground" /> : <FiChevronLeft className="w-3.5 h-3.5 text-muted-foreground" />}
-      </button>
+  // Exam View
+  if (examState === 'exam' && selectedTopic) {
+    const timePercent = (timeLeft / (selectedTopic.duration * 60)) * 100;
+    const isLow = timeLeft < 300;
 
-      {/* Main Content: Problem + Editor */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <div className="flex-1 grid lg:grid-cols-2 gap-0 min-h-0">
-          {/* Problem Statement */}
-          <div className="border-r border-border p-5 overflow-y-auto">
-            <div className="flex items-center gap-2 mb-3">
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                selectedProblem.difficulty === 'Easy' ? 'bg-success/10 text-success'
-                : selectedProblem.difficulty === 'Medium' ? 'bg-warning/10 text-warning'
-                : 'bg-destructive/10 text-destructive'
-              }`}>{selectedProblem.difficulty}</span>
-              {selectedProblem.tags.map(tag => (
-                <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{tag}</span>
-              ))}
-              <span className="text-xs text-muted-foreground ml-auto">{selectedProblem.acceptance}% {t('acceptance', 'स्वीकृति')}</span>
-            </div>
-            <h2 className="text-lg font-bold text-foreground mb-3">{t(selectedProblem.title, selectedProblem.titleHi)}</h2>
-            <p className="text-muted-foreground text-sm mb-4 leading-relaxed">{t(selectedProblem.description, selectedProblem.descriptionHi)}</p>
-            <div className="bg-muted rounded-lg p-4 font-mono text-sm space-y-2">
-              <p className="text-foreground"><strong>{t('Input:', 'इनपुट:')}</strong> {selectedProblem.sampleInput}</p>
-              <p className="text-foreground"><strong>{t('Output:', 'आउटपुट:')}</strong> {selectedProblem.sampleOutput}</p>
+    return (
+      <div className="space-y-4 animate-fade-in">
+        {/* Header */}
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            <button onClick={() => { if (timerRef.current) clearInterval(timerRef.current); setExamState('topics'); }} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+              <FiArrowLeft className="w-4 h-4 text-muted-foreground" />
+            </button>
+            <div>
+              <h1 className="text-lg font-bold text-foreground">{t(selectedTopic.title, selectedTopic.titleHi)}</h1>
+              <p className="text-xs text-muted-foreground">{Object.keys(answers).length}/{selectedTopic.questions.length} {t('answered', 'उत्तर दिए')}</p>
             </div>
           </div>
 
-          {/* Code Editor + Console */}
-          <div className="flex flex-col min-h-0">
-            <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card">
-              <span className="text-xs font-medium text-muted-foreground">JavaScript</span>
-              <button
-                onClick={handleRun}
-                disabled={running}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium text-xs text-primary-foreground gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
-              >
-                {running ? <span className="animate-spin">⏳</span> : <FiPlay className="w-3.5 h-3.5" />}
-                {running ? t('Running...', 'चल रहा है...') : t('Run Code', 'कोड चलाएं')}
-              </button>
+          <div className="flex items-center gap-3">
+            {/* Timer */}
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${isLow ? 'border-destructive/50 bg-destructive/5' : 'border-border bg-card'}`}>
+              <FiClock className={`w-4 h-4 ${isLow ? 'text-destructive animate-pulse' : 'text-muted-foreground'}`} />
+              <span className={`font-mono text-lg font-bold ${isLow ? 'text-destructive' : 'text-foreground'}`}>
+                {formatTime(timeLeft)}
+              </span>
             </div>
-            <textarea
-              value={code}
-              onChange={e => setCode(e.target.value)}
-              className="flex-1 p-4 bg-foreground/5 font-mono text-sm text-foreground resize-none focus:outline-none min-h-[200px]"
-              spellCheck={false}
-            />
-            <div className={`border-t border-border p-3 h-36 overflow-y-auto font-mono text-xs ${success ? 'border-t-success/50' : output && !success ? 'border-t-destructive/50' : ''}`}>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{t('Console', 'कंसोल')}</span>
-                {success && <FiCheckCircle className="text-success w-3.5 h-3.5" />}
+            <button
+              onClick={handleSubmit}
+              className="px-4 py-2 rounded-lg font-medium text-sm text-primary-foreground gradient-primary hover:opacity-90 transition-opacity"
+            >
+              {t('Submit', 'जमा करें')}
+            </button>
+          </div>
+        </div>
+
+        {/* Timer Progress Bar */}
+        <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-1000 ${isLow ? 'bg-destructive' : 'bg-primary'}`}
+            style={{ width: `${timePercent}%` }}
+          />
+        </div>
+
+        {/* Questions */}
+        <div className="space-y-4 pb-8">
+          {selectedTopic.questions.map((q, idx) => (
+            <div key={q.id} className="glass-panel p-4 rounded-xl">
+              <p className="font-medium text-foreground text-sm mb-3">
+                <span className="text-primary font-bold mr-2">Q{idx + 1}.</span>
+                {t(q.question, q.questionHi)}
+              </p>
+              <div className="grid sm:grid-cols-2 gap-2">
+                {(t(q.question, q.questionHi) === q.questionHi ? q.optionsHi : q.options).map((opt, optIdx) => {
+                  const isSelected = answers[q.id] === optIdx;
+                  return (
+                    <button
+                      key={optIdx}
+                      onClick={() => handleAnswer(q.id, optIdx)}
+                      className={`text-left px-3 py-2 rounded-lg text-sm border transition-all ${
+                        isSelected
+                          ? 'border-primary bg-primary/10 text-foreground font-medium'
+                          : 'border-border text-muted-foreground hover:border-primary/30 hover:bg-muted/50'
+                      }`}
+                    >
+                      <span className="font-medium mr-2">{String.fromCharCode(65 + optIdx)}.</span>
+                      {opt}
+                    </button>
+                  );
+                })}
               </div>
-              {output ? (
-                <pre className={`whitespace-pre-wrap text-xs ${success ? 'text-success' : 'text-destructive'}`}>{output}</pre>
-              ) : (
-                <p className="text-muted-foreground">{t('Click "Run Code" to see output', '"कोड चलाएं" पर क्लिक करें')}</p>
-              )}
             </div>
-          </div>
+          ))}
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Result View
+  if (examState === 'result' && selectedTopic) {
+    const { correct, total, percent } = getScore();
+
+    return (
+      <div className="space-y-6 animate-fade-in max-w-3xl mx-auto">
+        <button onClick={() => setExamState('topics')} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <FiArrowLeft className="w-4 h-4" /> {t('Back to Topics', 'विषयों पर वापस')}
+        </button>
+
+        {/* Score Card */}
+        <div className="glass-panel-elevated p-6 rounded-xl text-center">
+          <h2 className="text-xl font-bold text-foreground mb-1">{t(selectedTopic.title, selectedTopic.titleHi)}</h2>
+          <p className="text-muted-foreground text-sm mb-4">{t('Exam Results', 'परीक्षा परिणाम')}</p>
+          <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full text-2xl font-bold border-4 ${
+            percent >= 70 ? 'border-success text-success' : percent >= 40 ? 'border-warning text-warning' : 'border-destructive text-destructive'
+          }`}>
+            {percent}%
+          </div>
+          <p className="mt-3 text-foreground font-medium">{correct}/{total} {t('Correct', 'सही')}</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {percent >= 70 ? t('Excellent! 🎉', 'उत्कृष्ट! 🎉') : percent >= 40 ? t('Good effort! Keep practicing.', 'अच्छा प्रयास! अभ्यास जारी रखें।') : t('Needs improvement. Review the topic.', 'सुधार की जरूरत। विषय की समीक्षा करें।')}
+          </p>
+        </div>
+
+        {/* Detailed Answers */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-bold text-foreground">{t('Answer Review', 'उत्तर समीक्षा')}</h3>
+          {selectedTopic.questions.map((q, idx) => {
+            const userAnswer = answers[q.id];
+            const isCorrect = userAnswer === q.correctIndex;
+            const opts = t(q.question, q.questionHi) === q.questionHi ? q.optionsHi : q.options;
+
+            return (
+              <div key={q.id} className={`glass-panel p-4 rounded-xl border-l-4 ${isCorrect ? 'border-l-success' : userAnswer !== undefined ? 'border-l-destructive' : 'border-l-muted-foreground'}`}>
+                <div className="flex items-start gap-2 mb-2">
+                  {isCorrect ? <FiCheckCircle className="w-4 h-4 text-success mt-0.5 flex-shrink-0" /> : <FiXCircle className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />}
+                  <p className="text-sm font-medium text-foreground">
+                    <span className="text-primary font-bold mr-1">Q{idx + 1}.</span>
+                    {t(q.question, q.questionHi)}
+                  </p>
+                </div>
+                <div className="ml-6 text-xs space-y-1">
+                  {userAnswer !== undefined && !isCorrect && (
+                    <p className="text-destructive">{t('Your answer:', 'आपका उत्तर:')} {String.fromCharCode(65 + userAnswer)}) {opts[userAnswer]}</p>
+                  )}
+                  <p className="text-success">{t('Correct:', 'सही:')} {String.fromCharCode(65 + q.correctIndex)}) {opts[q.correctIndex]}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="flex gap-3 justify-center pb-6">
+          <button onClick={() => startExam(selectedTopic)} className="px-4 py-2 rounded-lg font-medium text-sm text-primary-foreground gradient-primary hover:opacity-90 transition-opacity">
+            {t('Retake Exam', 'फिर से परीक्षा दें')}
+          </button>
+          <button onClick={() => downloadQuestionPaper(selectedTopic)} className="flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium text-sm border border-border text-foreground hover:bg-muted transition-colors">
+            <FiDownload className="w-3.5 h-3.5" /> {t('Download Paper', 'पेपर डाउनलोड')}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }

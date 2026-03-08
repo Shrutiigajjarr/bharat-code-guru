@@ -4,10 +4,8 @@ import { ProgressBar } from '@/components/ProgressBar';
 import { weeklyActivityData, topicMasteryData, monthlyProgressData } from '@/data/mockData';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell
+  LineChart, Line
 } from 'recharts';
-
-const COLORS = ['hsl(265,90%,76%)', 'hsl(174,97%,43%)', 'hsl(33,100%,65%)', 'hsl(280,80%,65%)', 'hsl(0,72%,55%)', 'hsl(200,80%,60%)'];
 
 export default function Analytics() {
   const { t } = useApp();

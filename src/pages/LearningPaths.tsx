@@ -45,7 +45,7 @@ export default function LearningPaths() {
             <ProgressBar value={track.progress} label={t('Overall Progress', 'समग्र प्रगति')} size="lg" />
             <div className="mt-6 space-y-3">
               {track.modules.map((mod, i) => (
-                <div key={mod.id} className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${mod.completed ? 'border-success/30 bg-success/5' : 'border-border hover:border-primary/30'}`}>
+                <div key={mod.id} onClick={() => navigate(`/learning-paths/${track.id}/module/${mod.id}`)} className={`flex items-center gap-4 p-4 rounded-xl border transition-all cursor-pointer ${mod.completed ? 'border-success/30 bg-success/5' : 'border-border hover:border-primary/30'}`}>
                   <div className="text-lg">
                     {mod.completed ? <FiCheckCircle className="text-success" /> : <FiCircle className="text-muted-foreground" />}
                   </div>

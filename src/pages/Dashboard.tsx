@@ -3,7 +3,7 @@ import { StatCard } from '@/components/StatCard';
 import { CourseCard } from '@/components/CourseCard';
 import { ChartPanel } from '@/components/ChartPanel';
 import { mockTracks, weeklyActivityData, mockProblems } from '@/data/mockData';
-import { FiTarget, FiZap, FiTrendingUp, FiAward } from 'react-icons/fi';
+import { FiTarget, FiZap, FiTrendingUp, FiAward, FiUsers } from 'react-icons/fi';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 

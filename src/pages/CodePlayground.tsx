@@ -81,6 +81,7 @@ export default function CodePlayground() {
     }, 1000);
   };
 
+  const handleRun = () => {
     setRunning(true);
     setOutput('');
     setSuccess(false);

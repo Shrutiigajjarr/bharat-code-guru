@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import LearningPaths from "./pages/LearningPaths";
 import PracticeProblems from "./pages/PracticeProblems";
-import CodePlayground from "./pages/CodePlayground";
+
 import Mentorship from "./pages/Mentorship";
 import Leaderboard from "./pages/Leaderboard";
 import Analytics from "./pages/Analytics";

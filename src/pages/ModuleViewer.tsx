@@ -153,6 +153,75 @@ export default function ModuleViewer() {
           ))}
         </div>
       </div>
+
+      {/* Diagram Dialog */}
+      <Dialog open={showDiagrams} onOpenChange={setShowDiagrams}>
+        <DialogContent className="max-w-2xl max-h-[85vh]">
+          <DialogHeader>
+            <DialogTitle>{t('Diagrams', 'चित्र')} — {t(currentModule?.title || '', currentModule?.titleHi || '')}</DialogTitle>
+            <DialogDescription>{t('Visual diagrams covering topics in this module', 'इस मॉड्यूल के विषयों को कवर करने वाले दृश्य चित्र')}</DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[65vh] pr-4">
+            <div className="space-y-6">
+              {(moduleDiagrams[moduleId || ''] || []).length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-8">{t('No diagrams available for this module yet.', 'इस मॉड्यूल के लिए अभी कोई चित्र उपलब्ध नहीं है।')}</p>
+              ) : (
+                (moduleDiagrams[moduleId || ''] || []).map((diagram, idx) => (
+                  <DiagramCard key={idx} diagram={diagram} t={t} />
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+function DiagramCard({ diagram, t }: { diagram: DiagramItem; t: (en: string, hi: string) => string }) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+      <div>
+        <h4 className="font-semibold text-foreground text-sm">{t(diagram.title, diagram.titleHi)}</h4>
+        <p className="text-xs text-muted-foreground">{t(diagram.description, diagram.descriptionHi)}</p>
+      </div>
+
+      {/* Visual diagram */}
+      <div className="relative flex flex-wrap gap-3 justify-center py-4">
+        {diagram.nodes.map((node) => (
+          <div
+            key={node.id}
+            className="relative z-10 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground shadow-sm min-w-[120px] text-center"
+            style={{ backgroundColor: node.color + '20', borderColor: node.color }}
+          >
+            {t(node.label, node.labelHi)}
+          </div>
+        ))}
+      </div>
+
+      {/* Connections as text flow */}
+      {diagram.connections.length > 0 && (
+        <div className="flex flex-wrap gap-2 items-center justify-center pt-2 border-t border-border">
+          {diagram.connections.map((conn, i) => {
+            const fromNode = diagram.nodes.find(n => n.id === conn.from);
+            const toNode = diagram.nodes.find(n => n.id === conn.to);
+            if (!fromNode || !toNode) return null;
+            return (
+              <div key={i} className="flex items-center gap-1 text-xs text-muted-foreground">
+                <span className="rounded px-1.5 py-0.5 font-medium text-foreground" style={{ backgroundColor: fromNode.color + '20' }}>
+                  {t(fromNode.label, fromNode.labelHi)}
+                </span>
+                <span className="text-primary">→</span>
+                {conn.label && <span className="italic text-[10px]">({conn.label})</span>}
+                <span className="rounded px-1.5 py-0.5 font-medium text-foreground" style={{ backgroundColor: toNode.color + '20' }}>
+                  {t(toNode.label, toNode.labelHi)}
+                </span>
+                {i < diagram.connections.length - 1 && <span className="text-border mx-1">•</span>}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

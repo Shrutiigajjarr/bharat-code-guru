@@ -46,6 +46,7 @@ const App = () => (
             <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
             <Route path="/learning-paths" element={<AuthGuard><LearningPaths /></AuthGuard>} />
             <Route path="/learning-paths/:trackId/module/:moduleId" element={<AuthGuard><ModuleViewer /></AuthGuard>} />
+            <Route path="/learning-paths/:trackId/module/:moduleId/quiz" element={<AuthGuard><ModuleQuiz /></AuthGuard>} />
             <Route path="/practice" element={<AuthGuard><PracticeProblems /></AuthGuard>} />
             <Route path="/playground" element={<AuthGuard><CodePlayground /></AuthGuard>} />
             <Route path="/mentorship" element={<AuthGuard><Mentorship /></AuthGuard>} />

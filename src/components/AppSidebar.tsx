@@ -4,6 +4,7 @@ import {
   FiHome, FiBook, FiCode, FiTerminal, FiUsers,
   FiAward, FiBarChart2, FiUser, FiSettings, FiX
 } from 'react-icons/fi';
+import logo from '@/assets/logo.png';
 
 interface AppSidebarProps {
   open: boolean;

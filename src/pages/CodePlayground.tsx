@@ -144,6 +144,73 @@ export default function CodePlayground() {
           </div>
         </div>
       </div>
+
+      {/* Code Explainer Section */}
+      <div className="glass-panel-elevated p-6 mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <FiFileText className="w-5 h-5 text-primary" />
+            <h2 className="text-xl font-bold text-foreground">{t('Code Explainer', 'कोड व्याख्याता')}</h2>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">{t('Explanation Language:', 'व्याख्या भाषा:')}</span>
+            <button
+              onClick={() => setExplainLang(explainLang === 'en' ? 'hi' : 'en')}
+              className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+            >
+              {explainLang === 'en' ? 'English → हिंदी' : 'हिंदी → English'}
+            </button>
+          </div>
+        </div>
+        <p className="text-sm text-muted-foreground mb-4">
+          {t('Paste any code below and click "Explain Code" to get a line-by-line explanation.', 'नीचे कोई भी कोड पेस्ट करें और लाइन-दर-लाइन व्याख्या प्राप्त करने के लिए "कोड समझाएं" पर क्लिक करें।')}
+        </p>
+        <div className="grid lg:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-3">
+            <textarea
+              value={explainCode}
+              onChange={e => setExplainCode(e.target.value)}
+              placeholder={t('Paste your code here...', 'अपना कोड यहाँ पेस्ट करें...')}
+              className="w-full h-64 p-4 bg-foreground/5 border border-border rounded-lg font-mono text-sm text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+              spellCheck={false}
+            />
+            <button
+              onClick={handleExplain}
+              disabled={explaining || !explainCode.trim()}
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm text-primary-foreground gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {explaining ? (
+                <FiLoader className="w-4 h-4 animate-spin" />
+              ) : (
+                <FiFileText className="w-4 h-4" />
+              )}
+              {explaining ? t('Analyzing...', 'विश्लेषण हो रहा है...') : t('Explain Code', 'कोड समझाएं')}
+            </button>
+          </div>
+
+          <div className="h-64 overflow-y-auto border border-border rounded-lg bg-foreground/5">
+            {explanationLines.length > 0 ? (
+              <div className="divide-y divide-border">
+                {explanationLines.map((item, i) => (
+                  <div key={i} className="p-3 hover:bg-muted/50 transition-colors">
+                    <code className="text-xs font-mono text-primary block mb-1 whitespace-pre-wrap">
+                      <span className="text-muted-foreground mr-2 select-none">{i + 1}.</span>
+                      {item.line || ' '}
+                    </code>
+                    <p className="text-sm text-foreground pl-5">
+                      → {explainLang === 'en' ? item.en : item.hi}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+                {t('Explanation will appear here', 'व्याख्या यहाँ दिखाई देगी')}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

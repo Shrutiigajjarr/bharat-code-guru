@@ -1,5 +1,6 @@
 import { useApp } from '@/context/AppContext';
 import { LearningTrack } from '@/data/mockData';
+import { Button } from '@/components/ui/button';
 
 interface CourseCardProps {
   track: LearningTrack;
@@ -33,6 +34,9 @@ export function CourseCard({ track, onClick }: CourseCardProps) {
           <div className="progress-bar-animated h-full" style={{ width: `${track.progress}%` }} />
         </div>
       </div>
+      <Button onClick={onClick} size="sm" className="w-full mt-4">
+        {t('Continue Learning', 'सीखना जारी रखें')} →
+      </Button>
     </div>
   );
 }

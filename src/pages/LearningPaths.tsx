@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 
 export default function LearningPaths() {
-  const { t } = useApp();
+  const { t, tracks } = useApp();
   const navigate = useNavigate();
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
-  const track = mockTracks.find(tr => tr.id === selectedTrack);
+  const track = tracks.find(tr => tr.id === selectedTrack);
 
   return (
     <div className="space-y-6 animate-fade-in">

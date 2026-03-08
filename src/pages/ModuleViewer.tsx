@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { FiArrowLeft, FiArrowRight, FiRefreshCw, FiCheckCircle, FiPlay } from 'react-icons/fi';
+import { moduleDiagrams, DiagramItem } from '@/data/diagramData';
 
 export default function ModuleViewer() {
   const { trackId, moduleId } = useParams();

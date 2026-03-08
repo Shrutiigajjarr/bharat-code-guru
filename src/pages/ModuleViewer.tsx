@@ -172,7 +172,7 @@ export default function ModuleViewer() {
                 diagrams.map((d, idx) => (
                   <div key={idx} className="rounded-lg border border-border bg-card p-4 space-y-3">
                     <h4 className="font-semibold text-foreground text-sm">{t(d.title, d.titleHi)}</h4>
-                    <div className="bg-muted/30 rounded-lg p-4 overflow-auto">
+                    <div className="bg-white rounded-lg p-4 overflow-auto">
                       <MermaidDiagram chart={d.chart} />
                     </div>
                   </div>

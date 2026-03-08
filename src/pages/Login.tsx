@@ -30,8 +30,11 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4" style={{ background: 'linear-gradient(135deg, hsl(240,20%,12%) 0%, hsl(240,20%,18%) 50%, hsl(265,30%,18%) 100%)' }}>
       <div className="glass-panel-elevated p-8 md:p-12 w-full max-w-md animate-fade-in">
-        <div className="text-center mb-8">
-          <span className="text-5xl block mb-3">🇮🇳</span>
+          <div className="flex items-center justify-center mb-3">
+            <div style={{ width: 38, height: 38, borderRadius: 10, fontSize: 20, background: 'linear-gradient(135deg, rgb(187, 134, 252), rgba(3, 218, 198, 0.333))', border: '1px solid rgba(187, 134, 252, 0.267)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(187, 134, 252, 0.267) 0px 0px 16px' }}>
+              🇮🇳
+            </div>
+          </div>
           <h1 className="text-2xl font-bold text-foreground">Bharat Code Guru</h1>
           <p className="text-muted-foreground mt-2 text-sm">{t("India's Premier Coding Platform", 'भारत का प्रमुख कोडिंग प्लेटफ़ॉर्म')}</p>
         </div>

@@ -15,6 +15,7 @@ import Leaderboard from "./pages/Leaderboard";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
+import ModuleViewer from "./pages/ModuleViewer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

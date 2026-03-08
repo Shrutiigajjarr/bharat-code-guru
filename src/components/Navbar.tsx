@@ -1,6 +1,7 @@
 import { useApp } from '@/context/AppContext';
 import { NotificationBell } from './NotificationBell';
 import { FiLogOut, FiMenu, FiRefreshCw } from 'react-icons/fi';
+import logo from '@/assets/logo.png';
 
 interface NavbarProps {
   onToggleSidebar: () => void;
@@ -15,7 +16,7 @@ export function Navbar({ onToggleSidebar }: NavbarProps) {
         <FiMenu className="w-5 h-5" />
       </button>
       <div className="flex items-center gap-2">
-        <div style={{ width: 32, height: 32, borderRadius: 8, fontSize: 16, background: 'linear-gradient(135deg, rgb(187, 134, 252), rgba(3, 218, 198, 0.333))', border: '1px solid rgba(187, 134, 252, 0.267)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(187, 134, 252, 0.267) 0px 0px 16px' }}>🇮🇳</div>
+        <img src={logo} alt="Bharat Code Guru" className="w-8 h-8 rounded-lg" />
         <h1 className="text-lg font-bold text-foreground hidden sm:block">Bharat Code Guru</h1>
       </div>
       <div className="flex-1" />

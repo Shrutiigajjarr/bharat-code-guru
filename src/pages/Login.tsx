@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Role } from '@/data/mockData';
 import { FiUser, FiUsers, FiShield, FiEye, FiEyeOff } from 'react-icons/fi';
+import logo from '@/assets/logo.png';
 
 const DEMO_PASSWORD = 'demo1234';
 
@@ -32,9 +33,7 @@ export default function Login() {
       <div className="glass-panel-elevated p-8 md:p-12 w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-3">
-            <div style={{ width: 38, height: 38, borderRadius: 10, fontSize: 20, background: 'linear-gradient(135deg, rgb(187, 134, 252), rgba(3, 218, 198, 0.333))', border: '1px solid rgba(187, 134, 252, 0.267)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(187, 134, 252, 0.267) 0px 0px 16px' }}>
-              🇮🇳
-            </div>
+            <img src={logo} alt="Bharat Code Guru" className="w-16 h-16" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">Bharat Code Guru</h1>
           <p className="text-muted-foreground mt-2 text-sm">{t("India's Premier Coding Platform", 'भारत का प्रमुख कोडिंग प्लेटफ़ॉर्म')}</p>

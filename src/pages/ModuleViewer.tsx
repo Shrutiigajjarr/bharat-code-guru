@@ -13,6 +13,7 @@ export default function ModuleViewer() {
   const { t, tracks, completeModule } = useApp();
   const [videoCompleted, setVideoCompleted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showDiagrams, setShowDiagrams] = useState(false);
 
   const track = tracks.find(tr => tr.id === trackId);
   const moduleIndex = track?.modules.findIndex(m => m.id === moduleId) ?? -1;

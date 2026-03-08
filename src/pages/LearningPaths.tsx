@@ -3,6 +3,7 @@ import { useApp } from '@/context/AppContext';
 import { mockTracks } from '@/data/mockData';
 import { CourseCard } from '@/components/CourseCard';
 import { ProgressBar } from '@/components/ProgressBar';
+import { Button } from '@/components/ui/button';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 
 export default function LearningPaths() {
@@ -33,6 +34,9 @@ export default function LearningPaths() {
                 <p className="text-muted-foreground text-sm">{t(track.description, track.descriptionHi)}</p>
               </div>
             </div>
+            <Button size="lg" className="mt-2">
+              {t('Continue Learning', 'सीखना जारी रखें')} →
+            </Button>
             <ProgressBar value={track.progress} label={t('Overall Progress', 'समग्र प्रगति')} size="lg" />
             <div className="mt-6 space-y-3">
               {track.modules.map((mod, i) => (

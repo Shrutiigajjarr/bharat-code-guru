@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Role } from '@/data/mockData';
 import { FiUser, FiUsers, FiShield, FiEye, FiEyeOff } from 'react-icons/fi';
+import logo from '@/assets/logo.png';
 
 const DEMO_PASSWORD = 'demo1234';
 

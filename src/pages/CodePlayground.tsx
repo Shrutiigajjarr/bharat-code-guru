@@ -65,7 +65,22 @@ export default function CodePlayground() {
   const [running, setRunning] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleRun = () => {
+  // Code Explainer state
+  const [explainCode, setExplainCode] = useState('');
+  const [explainLang, setExplainLang] = useState<'en' | 'hi'>('en');
+  const [explaining, setExplaining] = useState(false);
+  const [explanationLines, setExplanationLines] = useState<LineExplanation[]>([]);
+
+  const handleExplain = () => {
+    if (!explainCode.trim()) return;
+    setExplaining(true);
+    setExplanationLines([]);
+    setTimeout(() => {
+      setExplanationLines(generateExplanations(explainCode));
+      setExplaining(false);
+    }, 1000);
+  };
+
     setRunning(true);
     setOutput('');
     setSuccess(false);

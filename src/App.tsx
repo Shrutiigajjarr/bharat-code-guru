@@ -48,7 +48,7 @@ const App = () => (
             <Route path="/learning-paths/:trackId/module/:moduleId" element={<AuthGuard><ModuleViewer /></AuthGuard>} />
             <Route path="/learning-paths/:trackId/module/:moduleId/quiz" element={<AuthGuard><ModuleQuiz /></AuthGuard>} />
             <Route path="/practice" element={<AuthGuard><PracticeProblems /></AuthGuard>} />
-            <Route path="/playground" element={<AuthGuard><CodePlayground /></AuthGuard>} />
+            <Route path="/playground" element={<Navigate to="/practice" replace />} />
             <Route path="/mentorship" element={<AuthGuard><Mentorship /></AuthGuard>} />
             <Route path="/leaderboard" element={<AuthGuard><Leaderboard /></AuthGuard>} />
             <Route path="/analytics" element={<AuthGuard><Analytics /></AuthGuard>} />

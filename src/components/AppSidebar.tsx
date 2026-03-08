@@ -15,7 +15,6 @@ const studentLinks = [
   { path: '/dashboard', label: 'Dashboard', labelHi: 'डैशबोर्ड', icon: FiHome },
   { path: '/learning-paths', label: 'Learning Paths', labelHi: 'सीखने के रास्ते', icon: FiBook },
   { path: '/practice', label: 'Practice', labelHi: 'अभ्यास', icon: FiCode },
-  { path: '/playground', label: 'Code Playground', labelHi: 'कोड प्लेग्राउंड', icon: FiTerminal },
   { path: '/mentorship', label: 'Mentorship', labelHi: 'मेंटरशिप', icon: FiUsers },
   { path: '/leaderboard', label: 'Leaderboard', labelHi: 'लीडरबोर्ड', icon: FiAward },
   { path: '/analytics', label: 'Analytics', labelHi: 'विश्लेषण', icon: FiBarChart2 },

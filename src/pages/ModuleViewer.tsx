@@ -123,7 +123,7 @@ export default function ModuleViewer() {
               <span className="text-lg">📝</span>
               <span className="text-xs">{t('Take Quiz', 'क्विज़ दें')}</span>
             </Button>
-            <Button variant="outline" className="flex flex-col h-auto py-4 gap-2">
+            <Button variant="outline" className="flex flex-col h-auto py-4 gap-2" onClick={() => setShowDiagrams(true)}>
               <span className="text-lg">📊</span>
               <span className="text-xs">{t('Show Diagram', 'चित्र दिखाएं')}</span>
             </Button>

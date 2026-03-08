@@ -7,7 +7,7 @@ import {
   LineChart, Line, PieChart, Pie, Cell
 } from 'recharts';
 
-const COLORS = ['hsl(25,100%,55%)', 'hsl(214,80%,56%)', 'hsl(142,70%,45%)', 'hsl(38,92%,50%)', 'hsl(0,84%,60%)', 'hsl(280,60%,50%)'];
+const COLORS = ['hsl(265,90%,76%)', 'hsl(174,97%,43%)', 'hsl(33,100%,65%)', 'hsl(280,80%,65%)', 'hsl(0,72%,55%)', 'hsl(200,80%,60%)'];
 
 export default function Analytics() {
   const { t } = useApp();

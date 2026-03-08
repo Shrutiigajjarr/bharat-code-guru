@@ -36,7 +36,10 @@ export default function LearningPaths() {
                 <p className="text-muted-foreground text-sm">{t(track.description, track.descriptionHi)}</p>
               </div>
             </div>
-            <Button size="lg" className="mt-2">
+            <Button size="lg" className="mt-2" onClick={() => {
+              const firstIncomplete = track.modules.find(m => !m.completed) || track.modules[0];
+              navigate(`/learning-paths/${track.id}/module/${firstIncomplete.id}`);
+            }}>
               {t('Continue Learning', 'सीखना जारी रखें')} →
             </Button>
             <ProgressBar value={track.progress} label={t('Overall Progress', 'समग्र प्रगति')} size="lg" />

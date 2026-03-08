@@ -1,22 +1,39 @@
 import { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { mockMentors, mockMentorRequests, MentorRequest } from '@/data/mockData';
-import { FiSend, FiCheck, FiClock, FiCheckCircle } from 'react-icons/fi';
+import { FiSend, FiCheck, FiClock, FiCheckCircle, FiCalendar, FiStar, FiUser } from 'react-icons/fi';
+
+const mentorSpecialties: Record<string, { en: string; hi: string; rating: number; sessions: number; specialties: string[] }> = {
+  m1: { en: 'Data Structures & Algorithms', hi: 'डेटा स्ट्रक्चर और एल्गोरिदम', rating: 4.9, sessions: 320, specialties: ['Arrays', 'Trees', 'Graphs'] },
+  m2: { en: 'System Design & Architecture', hi: 'सिस्टम डिज़ाइन और आर्किटेक्चर', rating: 4.8, sessions: 280, specialties: ['Microservices', 'Scaling', 'Databases'] },
+  m3: { en: 'Web Development & React', hi: 'वेब डेवलपमेंट और रिएक्ट', rating: 4.7, sessions: 195, specialties: ['React', 'Node.js', 'TypeScript'] },
+  m4: { en: 'Machine Learning & AI', hi: 'मशीन लर्निंग और AI', rating: 4.9, sessions: 240, specialties: ['Python', 'TensorFlow', 'NLP'] },
+  m5: { en: 'Competitive Programming', hi: 'प्रतिस्पर्धी प्रोग्रामिंग', rating: 4.6, sessions: 150, specialties: ['DP', 'Greedy', 'Number Theory'] },
+};
+
+const upcomingSessions = [
+  { id: 'us1', mentorId: 'm1', mentorName: 'Dr. Rajesh Khanna', mentorNameHi: 'डॉ. राजेश खन्ना', topic: 'Graph Traversal - BFS & DFS', topicHi: 'ग्राफ़ ट्रैवर्सल - BFS और DFS', date: '2026-03-10', time: '10:00 AM', avatar: '👨‍🏫' },
+  { id: 'us2', mentorId: 'm2', mentorName: 'Prof. Sunita Rao', mentorNameHi: 'प्रो. सुनीता राव', topic: 'System Design: URL Shortener', topicHi: 'सिस्टम डिज़ाइन: URL शॉर्टनर', date: '2026-03-11', time: '2:00 PM', avatar: '👩‍🏫' },
+  { id: 'us3', mentorId: 'm3', mentorName: 'Amit Deshmukh', mentorNameHi: 'अमित देशमुख', topic: 'React Performance Optimization', topicHi: 'रिएक्ट परफॉर्मेंस ऑप्टिमाइज़ेशन', date: '2026-03-12', time: '11:30 AM', avatar: '🧑‍🏫' },
+  { id: 'us4', mentorId: 'm4', mentorName: 'Neha Kulkarni', mentorNameHi: 'नेहा कुलकर्णी', topic: 'Intro to Neural Networks', topicHi: 'न्यूरल नेटवर्क का परिचय', date: '2026-03-14', time: '4:00 PM', avatar: '👩‍🏫' },
+];
 
 export default function Mentorship() {
   const { currentUser, t } = useApp();
   const [requests, setRequests] = useState<MentorRequest[]>(mockMentorRequests);
   const [newTopic, setNewTopic] = useState('');
   const [newMessage, setNewMessage] = useState('');
+  const [selectedMentor, setSelectedMentor] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = () => {
-    if (!newTopic || !newMessage) return;
+    if (!newTopic || !newMessage || !selectedMentor) return;
+    const mentor = mockMentors.find(m => m.id === selectedMentor);
     const req: MentorRequest = {
       id: `mr${Date.now()}`,
       studentId: currentUser?.id || 's1',
       studentName: currentUser?.name || 'Student',
-      mentorId: mockMentors[Math.floor(Math.random() * mockMentors.length)].id,
+      mentorId: selectedMentor,
       topic: newTopic,
       message: newMessage,
       status: 'pending',
@@ -25,6 +42,7 @@ export default function Mentorship() {
     setRequests(prev => [req, ...prev]);
     setNewTopic('');
     setNewMessage('');
+    setSelectedMentor(null);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
   };
@@ -40,26 +58,101 @@ export default function Mentorship() {
     <div className="space-y-6 animate-fade-in">
       <h1 className="text-2xl font-bold text-foreground">{t('Mentorship', 'मेंटरशिप')}</h1>
 
+      {/* Upcoming Sessions */}
+      <div className="glass-panel-elevated p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <FiCalendar className="w-5 h-5 text-primary" />
+          <h3 className="font-bold text-foreground">{t('Upcoming Mentor Sessions', 'आगामी मेंटर सत्र')}</h3>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {upcomingSessions.map(session => (
+            <div key={session.id} className="glass-panel p-4 hover-lift border-l-4 border-primary/60">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl">{session.avatar}</span>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{t(session.mentorName, session.mentorNameHi)}</p>
+                </div>
+              </div>
+              <p className="text-sm font-medium text-foreground mb-2">{t(session.topic, session.topicHi)}</p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <FiCalendar className="w-3 h-3" />
+                <span>{session.date}</span>
+                <span>•</span>
+                <FiClock className="w-3 h-3" />
+                <span>{session.time}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Select Mentor & Request */}
       {currentUser?.role === 'student' && (
         <div className="glass-panel-elevated p-6">
-          <h3 className="font-bold text-foreground mb-4">{t('Request Mentor Help', 'मेंटर सहायता का अनुरोध करें')}</h3>
+          <h3 className="font-bold text-foreground mb-4">{t('Choose a Mentor & Request Help', 'एक मेंटर चुनें और सहायता का अनुरोध करें')}</h3>
           {showSuccess && (
             <div className="mb-4 p-3 rounded-xl bg-success/10 text-success text-sm font-medium animate-fade-in">
-              ✅ {t('Request submitted! A mentor will respond soon.', 'अनुरोध सबमिट किया गया! एक मेंटर जल्द जवाब देगा।')}
+              ✅ {t('Request submitted! Your mentor will respond soon.', 'अनुरोध सबमिट किया गया! आपका मेंटर जल्द जवाब देगा।')}
             </div>
           )}
+
+          {/* Mentor Selection Grid */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
+            {mockMentors.map(m => {
+              const info = mentorSpecialties[m.id];
+              const isSelected = selectedMentor === m.id;
+              return (
+                <button
+                  key={m.id}
+                  onClick={() => setSelectedMentor(isSelected ? null : m.id)}
+                  className={`glass-panel p-4 text-left transition-all hover-lift ${
+                    isSelected ? 'ring-2 ring-primary bg-primary/5' : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-3xl">{m.avatar}</span>
+                    <div>
+                      <p className="font-semibold text-foreground">{t(m.name, m.nameHi)}</p>
+                      <p className="text-xs text-muted-foreground">{t(info.en, info.hi)}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                    <span className="flex items-center gap-1"><FiStar className="text-warning w-3 h-3" /> {info.rating}</span>
+                    <span className="flex items-center gap-1"><FiUser className="w-3 h-3" /> {info.sessions} {t('sessions', 'सत्र')}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {info.specialties.map(s => (
+                      <span key={s} className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">{s}</span>
+                    ))}
+                  </div>
+                  {isSelected && (
+                    <div className="mt-2 text-xs font-medium text-primary flex items-center gap-1">
+                      <FiCheckCircle className="w-3 h-3" /> {t('Selected', 'चयनित')}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Request Form */}
           <div className="space-y-3">
             <input value={newTopic} onChange={e => setNewTopic(e.target.value)} placeholder={t('Topic (e.g., Dynamic Programming)', 'विषय (जैसे, डायनामिक प्रोग्रामिंग)')}
               className="w-full px-4 py-2.5 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
             <textarea value={newMessage} onChange={e => setNewMessage(e.target.value)} placeholder={t('Describe your question...', 'अपना प्रश्न बताएं...')} rows={3}
               className="w-full px-4 py-2.5 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none" />
-            <button onClick={handleSubmit} className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium text-sm text-primary-foreground gradient-primary hover:opacity-90 transition-opacity">
+            <button onClick={handleSubmit} disabled={!selectedMentor || !newTopic || !newMessage}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium text-sm text-primary-foreground gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50">
               <FiSend className="w-4 h-4" /> {t('Submit Request', 'अनुरोध भेजें')}
             </button>
+            {!selectedMentor && (
+              <p className="text-xs text-muted-foreground">{t('↑ Please select a mentor above first', '↑ कृपया पहले ऊपर एक मेंटर चुनें')}</p>
+            )}
           </div>
         </div>
       )}
 
+      {/* Requests List */}
       <div>
         <h3 className="font-bold text-foreground mb-4">
           {currentUser?.role === 'mentor' ? t('Student Requests', 'छात्र अनुरोध') : t('Your Requests', 'आपके अनुरोध')}
@@ -87,21 +180,6 @@ export default function Mentorship() {
           ))}
         </div>
       </div>
-
-      {currentUser?.role !== 'mentor' && (
-        <div>
-          <h3 className="font-bold text-foreground mb-4">{t('Available Mentors', 'उपलब्ध मेंटर')}</h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {mockMentors.map(m => (
-              <div key={m.id} className="glass-panel p-4 text-center hover-lift">
-                <span className="text-4xl block mb-2">{m.avatar}</span>
-                <p className="font-semibold text-foreground">{t(m.name, m.nameHi)}</p>
-                <p className="text-xs text-muted-foreground mt-1">{t('Expert Mentor', 'विशेषज्ञ मेंटर')}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

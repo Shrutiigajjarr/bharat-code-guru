@@ -41,7 +41,7 @@ export default function Dashboard() {
                     <XAxis dataKey="day" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
                     <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
                     <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-                    <Bar dataKey="problems" fill="hsl(25, 100%, 55%)" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="problems" fill="hsl(265, 90%, 76%)" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartPanel>

@@ -7,7 +7,7 @@ import {
   LineChart, Line, PieChart, Pie, Cell
 } from 'recharts';
 
-const COLORS = ['hsl(25,100%,55%)', 'hsl(214,80%,56%)', 'hsl(142,70%,45%)', 'hsl(38,92%,50%)', 'hsl(0,84%,60%)', 'hsl(280,60%,50%)'];
+const COLORS = ['hsl(265,90%,76%)', 'hsl(174,97%,43%)', 'hsl(33,100%,65%)', 'hsl(280,80%,65%)', 'hsl(0,72%,55%)', 'hsl(200,80%,60%)'];
 
 export default function Analytics() {
   const { t } = useApp();
@@ -23,7 +23,7 @@ export default function Analytics() {
               <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
               <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
               <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-              <Line type="monotone" dataKey="solved" stroke="hsl(25,100%,55%)" strokeWidth={3} dot={{ fill: 'hsl(25,100%,55%)', r: 5 }} />
+              <Line type="monotone" dataKey="solved" stroke="hsl(265,90%,76%)" strokeWidth={3} dot={{ fill: 'hsl(265,90%,76%)', r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
         </ChartPanel>
@@ -34,7 +34,7 @@ export default function Analytics() {
               <XAxis dataKey="day" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
               <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
               <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-              <Bar dataKey="hours" fill="hsl(214,80%,56%)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="hours" fill="hsl(174,97%,43%)" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartPanel>

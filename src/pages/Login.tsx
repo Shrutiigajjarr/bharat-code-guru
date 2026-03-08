@@ -16,7 +16,7 @@ export default function Login() {
   const handleLogin = () => login('', selectedRole);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4" style={{ background: 'linear-gradient(135deg, hsl(30,30%,98%) 0%, hsl(25,50%,95%) 50%, hsl(214,40%,95%) 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center bg-background p-4" style={{ background: 'linear-gradient(135deg, hsl(240,20%,12%) 0%, hsl(240,20%,18%) 50%, hsl(265,30%,18%) 100%)' }}>
       <div className="glass-panel-elevated p-8 md:p-12 w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
           <span className="text-5xl block mb-3">🇮🇳</span>

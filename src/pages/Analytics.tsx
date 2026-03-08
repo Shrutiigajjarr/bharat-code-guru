@@ -23,7 +23,7 @@ export default function Analytics() {
               <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
               <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
               <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-              <Line type="monotone" dataKey="solved" stroke="hsl(25,100%,55%)" strokeWidth={3} dot={{ fill: 'hsl(25,100%,55%)', r: 5 }} />
+              <Line type="monotone" dataKey="solved" stroke="hsl(265,90%,76%)" strokeWidth={3} dot={{ fill: 'hsl(265,90%,76%)', r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
         </ChartPanel>

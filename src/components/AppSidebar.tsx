@@ -50,7 +50,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
       <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-sidebar text-sidebar-foreground flex flex-col transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🇮🇳</span>
+            <div style={{ width: 30, height: 30, borderRadius: 8, fontSize: 14, background: 'linear-gradient(135deg, rgb(187, 134, 252), rgba(3, 218, 198, 0.333))', border: '1px solid rgba(187, 134, 252, 0.267)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(187, 134, 252, 0.267) 0px 0px 16px' }}>🇮🇳</div>
             <span className="font-bold text-sidebar-primary-foreground">BCG</span>
           </div>
           <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-sidebar-accent transition-colors">

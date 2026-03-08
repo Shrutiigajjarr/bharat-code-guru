@@ -1,6 +1,7 @@
 import { useApp } from '@/context/AppContext';
 import { NotificationBell } from './NotificationBell';
 import { FiLogOut, FiMenu, FiRefreshCw } from 'react-icons/fi';
+import logo from '@/assets/logo.png';
 
 interface NavbarProps {
   onToggleSidebar: () => void;

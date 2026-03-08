@@ -35,7 +35,7 @@ export interface LearningTrack {
   descriptionHi: string;
   icon: string;
   color: string;
-  modules: { id: string; title: string; titleHi: string; completed: boolean; duration: string }[];
+  modules: { id: string; title: string; titleHi: string; completed: boolean; duration: string; videoUrl?: string }[];
   progress: number;
   totalStudents: number;
 }

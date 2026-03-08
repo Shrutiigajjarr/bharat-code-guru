@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
 import { mockTracks } from '@/data/mockData';
 import { CourseCard } from '@/components/CourseCard';
@@ -8,8 +9,9 @@ import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 
 export default function LearningPaths() {
   const { t } = useApp();
+  const navigate = useNavigate();
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
-  const track = mockTracks.find(t => t.id === selectedTrack);
+  const track = mockTracks.find(tr => tr.id === selectedTrack);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -34,13 +36,16 @@ export default function LearningPaths() {
                 <p className="text-muted-foreground text-sm">{t(track.description, track.descriptionHi)}</p>
               </div>
             </div>
-            <Button size="lg" className="mt-2">
+            <Button size="lg" className="mt-2" onClick={() => {
+              const firstIncomplete = track.modules.find(m => !m.completed) || track.modules[0];
+              navigate(`/learning-paths/${track.id}/module/${firstIncomplete.id}`);
+            }}>
               {t('Continue Learning', 'सीखना जारी रखें')} →
             </Button>
             <ProgressBar value={track.progress} label={t('Overall Progress', 'समग्र प्रगति')} size="lg" />
             <div className="mt-6 space-y-3">
               {track.modules.map((mod, i) => (
-                <div key={mod.id} className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${mod.completed ? 'border-success/30 bg-success/5' : 'border-border hover:border-primary/30'}`}>
+                <div key={mod.id} onClick={() => navigate(`/learning-paths/${track.id}/module/${mod.id}`)} className={`flex items-center gap-4 p-4 rounded-xl border transition-all cursor-pointer ${mod.completed ? 'border-success/30 bg-success/5' : 'border-border hover:border-primary/30'}`}>
                   <div className="text-lg">
                     {mod.completed ? <FiCheckCircle className="text-success" /> : <FiCircle className="text-muted-foreground" />}
                   </div>

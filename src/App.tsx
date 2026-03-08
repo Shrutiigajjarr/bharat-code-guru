@@ -15,6 +15,7 @@ import Leaderboard from "./pages/Leaderboard";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
+import ModuleViewer from "./pages/ModuleViewer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
             <Route path="/learning-paths" element={<AuthGuard><LearningPaths /></AuthGuard>} />
+            <Route path="/learning-paths/:trackId/module/:moduleId" element={<AuthGuard><ModuleViewer /></AuthGuard>} />
             <Route path="/practice" element={<AuthGuard><PracticeProblems /></AuthGuard>} />
             <Route path="/playground" element={<AuthGuard><CodePlayground /></AuthGuard>} />
             <Route path="/mentorship" element={<AuthGuard><Mentorship /></AuthGuard>} />

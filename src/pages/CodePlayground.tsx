@@ -1,62 +1,19 @@
 import { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { mockProblems } from '@/data/mockData';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { FiPlay, FiCheckCircle, FiSkipForward, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { useSearchParams } from 'react-router-dom';
+import { FiPlay, FiCheckCircle } from 'react-icons/fi';
 
 export default function CodePlayground() {
   const { t } = useApp();
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const problemId = searchParams.get('problem') || 'p1';
+  const problem = mockProblems.find(p => p.id === problemId) || mockProblems[0];
 
-  const problemId = searchParams.get('problem') || mockProblems[0]?.id || 'p1';
-  const currentIndex = mockProblems.findIndex(p => p.id === problemId);
-  const problem = mockProblems[currentIndex >= 0 ? currentIndex : 0];
-
-  const defaultCode = `function solution(input) {\n  // Write your code here\n  \n  return result;\n}`;
-
-  const [code, setCode] = useState(defaultCode);
+  const [code, setCode] = useState(`function solution(input) {\n  // Write your code here\n  \n  return result;\n}`);
   const [output, setOutput] = useState('');
   const [running, setRunning] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [submitResult, setSubmitResult] = useState<'correct' | 'incorrect' | null>(null);
-  const [submitError, setSubmitError] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-
-  const goToProblem = (index: number) => {
-    if (index < 0 || index >= mockProblems.length) return;
-    navigate(`/playground?problem=${mockProblems[index].id}`);
-    setCode(defaultCode);
-    setOutput('');
-    setSuccess(false);
-    setSubmitResult(null);
-    setSubmitError('');
-  };
-
-  const handleSkip = () => {
-    const next = (currentIndex >= 0 ? currentIndex : 0) + 1;
-    if (next < mockProblems.length) {
-      goToProblem(next);
-    }
-  };
-
-  const handleSubmit = () => {
-    const trimmed = code.trim();
-    if (!trimmed || trimmed === defaultCode.trim()) {
-      setSubmitError(t('Please write your solution before submitting.', 'कृपया सबमिट करने से पहले अपना समाधान लिखें।'));
-      setSubmitResult(null);
-      return;
-    }
-    setSubmitError('');
-    setSubmitting(true);
-    setSubmitResult(null);
-
-    setTimeout(() => {
-      const isCorrect = Math.random() > 0.4;
-      setSubmitResult(isCorrect ? 'correct' : 'incorrect');
-      setSubmitting(false);
-    }, 1500);
-  };
 
   const handleRun = () => {
     setRunning(true);
@@ -73,45 +30,10 @@ export default function CodePlayground() {
     }, 1500);
   };
 
-  const idx = currentIndex >= 0 ? currentIndex : 0;
-
   return (
     <div className="space-y-4 animate-fade-in h-full">
-      {/* Header with navigation */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">{t('Code Playground', 'कोड प्लेग्राउंड')}</h1>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => goToProblem(idx - 1)}
-            disabled={idx <= 0}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-muted text-muted-foreground hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            <FiChevronLeft className="w-4 h-4" />
-            {t('Previous', 'पिछला')}
-          </button>
-          <span className="text-sm text-muted-foreground px-2">
-            {idx + 1} / {mockProblems.length}
-          </span>
-          <button
-            onClick={() => goToProblem(idx + 1)}
-            disabled={idx >= mockProblems.length - 1}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-muted text-muted-foreground hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {t('Next', 'अगला')}
-            <FiChevronRight className="w-4 h-4" />
-          </button>
-          <button
-            onClick={handleSkip}
-            disabled={idx >= mockProblems.length - 1}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-secondary text-secondary-foreground hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            <FiSkipForward className="w-4 h-4" />
-            {t('Skip', 'छोड़ें')}
-          </button>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-4 h-[calc(100vh-260px)]">
+      <h1 className="text-2xl font-bold text-foreground">{t('Code Playground', 'कोड प्लेग्राउंड')}</h1>
+      <div className="grid lg:grid-cols-2 gap-4 h-[calc(100vh-220px)]">
         {/* Problem Statement */}
         <div className="glass-panel-elevated p-6 overflow-y-auto">
           <div className="flex items-center gap-2 mb-3">
@@ -137,56 +59,22 @@ export default function CodePlayground() {
           <div className="glass-panel-elevated flex-1 flex flex-col">
             <div className="flex items-center justify-between p-3 border-b border-border">
               <span className="text-sm font-medium text-muted-foreground">JavaScript</span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handleRun}
-                  disabled={running}
-                  className="flex items-center gap-2 px-4 py-1.5 rounded-lg font-medium text-sm text-primary-foreground gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
-                >
-                  {running ? <span className="animate-spin">⏳</span> : <FiPlay className="w-4 h-4" />}
-                  {running ? t('Running...', 'चल रहा है...') : t('Run Code', 'कोड चलाएं')}
-                </button>
-                <button
-                  onClick={handleSubmit}
-                  disabled={submitting}
-                  className={`flex items-center gap-2 px-4 py-1.5 rounded-lg font-medium text-sm transition-opacity disabled:opacity-50 ${
-                    submitResult === 'correct'
-                      ? 'bg-success text-success-foreground'
-                      : submitResult === 'incorrect'
-                      ? 'bg-destructive text-destructive-foreground'
-                      : 'bg-accent text-accent-foreground hover:opacity-90'
-                  }`}
-                >
-                  <FiCheckCircle className="w-4 h-4" />
-                  {submitting
-                    ? t('Checking...', 'जाँच रहा है...')
-                    : submitResult === 'correct'
-                    ? t('Correct!', 'सही!')
-                    : submitResult === 'incorrect'
-                    ? t('Incorrect', 'गलत')
-                    : t('Submit', 'सबमिट करें')}
-                </button>
-              </div>
+              <button
+                onClick={handleRun}
+                disabled={running}
+                className="flex items-center gap-2 px-4 py-1.5 rounded-lg font-medium text-sm text-primary-foreground gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                {running ? (
+                  <span className="animate-spin">⏳</span>
+                ) : (
+                  <FiPlay className="w-4 h-4" />
+                )}
+                {running ? t('Running...', 'चल रहा है...') : t('Run Code', 'कोड चलाएं')}
+              </button>
             </div>
-            {submitError && (
-              <div className="px-4 py-2 text-sm text-destructive bg-destructive/10 border-b border-border">
-                {submitError}
-              </div>
-            )}
-            {submitResult && (
-              <div className={`px-4 py-2 text-sm border-b border-border ${
-                submitResult === 'correct'
-                  ? 'text-success bg-success/10'
-                  : 'text-destructive bg-destructive/10'
-              }`}>
-                {submitResult === 'correct'
-                  ? t('🎉 Your solution is correct! Move to the next problem.', '🎉 आपका समाधान सही है! अगली समस्या पर जाएं।')
-                  : t('❌ Your solution is incorrect. Please try again.', '❌ आपका समाधान गलत है। कृपया पुनः प्रयास करें।')}
-              </div>
-            )}
             <textarea
               value={code}
-              onChange={e => { setCode(e.target.value); setSubmitResult(null); setSubmitError(''); }}
+              onChange={e => setCode(e.target.value)}
               className="flex-1 p-4 bg-foreground/5 font-mono text-sm text-foreground resize-none focus:outline-none"
               spellCheck={false}
             />

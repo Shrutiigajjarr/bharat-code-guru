@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
 import { mockTracks } from '@/data/mockData';
 import { CourseCard } from '@/components/CourseCard';
